@@ -1,7 +1,7 @@
 {
   "name": "Localhost Cookie Copy",
   "description": "Listens for Set-Cookie headers received from the provided url and sets those cookies to localhost",
-  "version": "0.1",
+  "version": "0.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
