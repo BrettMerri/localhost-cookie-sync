@@ -1,3 +1,5 @@
+addListener();
+
 // Remake listener to apply url filter
 chrome.storage.onChanged.addListener(changes => {
   if ('url' in changes) {
