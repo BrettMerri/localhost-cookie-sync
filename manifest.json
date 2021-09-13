@@ -1,7 +1,7 @@
 {
   "name": "Localhost Cookie Copy",
-  "description": "Listens for Set-Cookie headers received from the provided url and sets those cookies to localhost",
-  "version": "0.2",
+  "description": "Copy cookies from a domain to your localhost",
+  "version": "0.3",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -15,7 +15,7 @@
       "128": "/images/cookie128.png"
     }
   },
-  "permissions": ["cookies", "storage", "webRequest"],
+  "permissions": ["cookies", "storage"],
   "host_permissions": ["<all_urls>"],
   "icons": {
     "16": "/images/cookie16.png",

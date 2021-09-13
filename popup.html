@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <form id="settingsForm">
+      <ul>
+        <li>
+          <label>Domain to copy from</label>
+          <input id="domain" name="domain" type="text" />
+        </li>
+        <li>
+          <label>Cookies to copy (separated by new lines)</label>
+          <textarea
+            id="cookiesToCopy"
+            name="cookiesToCopy"
+            rows="5"
+            cols="33"
+          >
+          </textarea>
+        </li>
+        <li>
+          <button type="submit">Copy</button>
+        </li>
+        <li>
+          <span id="results"></span>
+        </li>
+      </ul>
+    </form>
+    <script src="popup.js"></script>
+  </body>
+</html>

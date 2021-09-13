@@ -1,3 +1,3 @@
 # Localhost Cookie Copy
 
-Listens for `Set-Cookie` headers received from the provided url and sets those cookies to `localhost`.
+Enter a domain and a list of cookies to copy over to your localhost.
