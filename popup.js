@@ -1,5 +1,6 @@
 const cookiesToCopyInput = document.getElementById('cookiesToCopy');
 const domainInput = document.getElementById('domain');
+const errorsSpan = document.getElementById('errors')
 const resultsSpan = document.getElementById('results');
 const settingsForm = document.getElementById('settingsForm');
 
@@ -18,17 +19,20 @@ settingsForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const domain = document.getElementById('domain').value?.trim();
-
-  const cookiesToCopyInputValue = document.getElementById('cookiesToCopy').value;
-  const cookiesToCopy = cookiesToCopyInputValue.split('\n');
+  const cookiesToCopy = document.getElementById('cookiesToCopy').value
+    .split('\n')
+    .map(val => val.trim())
+    .filter(val => val);
 
   await chrome.storage.sync.set({
     cookiesToCopy,
     domain,
   });
 
-  chrome.runtime.sendMessage({ type: 'COPY_COOKIES' }, response => {
-    console.log(response);
-    resultsSpan.innerText = response.join('\n');
+  if (!domain || !cookiesToCopy.length) return;
+
+  chrome.runtime.sendMessage({ type: 'COPY_COOKIES' }, ({ results, errors }) => {
+    errorsSpan.innerText = errors.join('\n');
+    resultsSpan.innerText = results.join('\n');
   });
 });

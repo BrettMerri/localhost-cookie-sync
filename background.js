@@ -3,8 +3,10 @@ chrome.runtime.onMessage.addListener(handleMessage);
 chrome.runtime.onInstalled.addListener(handleInstall);
 
 function handleMessage(request, _, sendMessage) {
-  if (request.type === 'COPY_COOKIES') {
-    copyCookiesToLocalhost().then(sendMessage);
+  switch (request.type) {
+    case 'COPY_COOKIES': {
+      copyCookiesToLocalhost().then(sendMessage);
+    }
   }
 
   return true;
@@ -27,6 +29,7 @@ async function copyCookiesToLocalhost() {
       let cookies = await chrome.cookies.getAll({ domain });
       cookies = cookies.filter(cookie => cookiesToCopy.includes(cookie.name));
       const results = [];
+      const errors = [];
 
       for (const cookie of cookies) {
         try {
@@ -39,14 +42,14 @@ async function copyCookiesToLocalhost() {
             url: "http://localhost/",
             value: cookie.value,
           });
-  
-          results.push(`Persisted ${cookie.name} cookie to localhost`);
+
+          results.push(`Set ${cookie.name} cookie to localhost`);
         } catch (err) {
-          results.push(`Failed to set cookie ${cookie.name}`, err);
+          errors.push(`Failed to set ${cookie.name} cookie to localhost`, err);
         }
       }
 
-      resolve(results);
+      resolve({ results, errors });
     });
   });
 }
