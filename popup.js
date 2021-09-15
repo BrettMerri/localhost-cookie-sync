@@ -1,17 +1,17 @@
-const cookiesToCopyInput = document.getElementById('cookiesToCopy');
+const cookiesToSyncInput = document.getElementById('cookiesToSync');
 const domainInput = document.getElementById('domain');
 const errorsSpan = document.getElementById('errors')
 const resultsSpan = document.getElementById('results');
 const settingsForm = document.getElementById('settingsForm');
 
 // Populate inputs with initial values
-chrome.storage.sync.get(['cookiesToCopy', 'domain'], ({ cookiesToCopy, domain }) => {
+chrome.storage.sync.get(['cookiesToSync', 'domain'], ({ cookiesToSync, domain }) => {
   if (domain) {
     domainInput.value = domain;
   }
 
-  if (cookiesToCopy) {
-    cookiesToCopyInput.value = cookiesToCopy.join('\n');
+  if (cookiesToSync) {
+    cookiesToSyncInput.value = cookiesToSync.join('\n');
   }
 });
 
@@ -19,17 +19,17 @@ settingsForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const domain = document.getElementById('domain').value?.trim();
-  const cookiesToCopy = document.getElementById('cookiesToCopy').value
+  const cookiesToSync = document.getElementById('cookiesToSync').value
     .split('\n')
     .map(val => val.trim())
     .filter(val => val);
 
   await chrome.storage.sync.set({
-    cookiesToCopy,
+    cookiesToSync,
     domain,
   });
 
-  if (!domain || !cookiesToCopy.length) return;
+  if (!domain || !cookiesToSync.length) return;
 
   chrome.runtime.sendMessage({ type: 'COPY_COOKIES' }, ({ results, errors }) => {
     errorsSpan.innerText = errors.join('\n');

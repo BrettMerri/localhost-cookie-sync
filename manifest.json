@@ -1,7 +1,7 @@
 {
-  "name": "Localhost Cookie Copy",
-  "description": "Copy cookies from a domain to your localhost",
-  "version": "0.3",
+  "name": "Localhost Cookie Sync",
+  "description": "Sync cookies from a domain to your localhost",
+  "version": "0.4",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"

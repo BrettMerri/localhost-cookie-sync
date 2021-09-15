@@ -2,6 +2,33 @@ chrome.runtime.onMessage.addListener(handleMessage);
 
 chrome.runtime.onInstalled.addListener(handleInstall);
 
+chrome.cookies.onChanged.addListener(handleCookieChange);
+
+function handleCookieChange({ cookie, removed }) {
+  chrome.storage.sync.get(['cookiesToSync', 'domain'], async ({ cookiesToSync, domain }) => {
+    if (domain !== cookie.domain || !cookiesToSync.includes(cookie.name)) return;
+
+    if (removed) {
+      await chrome.cookies.remove({
+        name: cookie.name,
+        url: "http://localhost/",
+      });
+
+      return;
+    }
+
+    await chrome.cookies.set({
+      domain: 'localhost',
+      httpOnly: cookie.httpOnly,
+      name: cookie.name,
+      path: cookie.path,
+      sameSite: cookie.sameSite,
+      url: "http://localhost/",
+      value: cookie.value,
+    });
+  });
+}
+
 function handleMessage(request, _, sendMessage) {
   switch (request.type) {
     case 'COPY_COOKIES': {
@@ -13,11 +40,11 @@ function handleMessage(request, _, sendMessage) {
 }
 
 function handleInstall() {
-  chrome.storage.sync.get(['cookiesToCopy', 'domain'], async ({ cookiesToCopy, domain }) => {
-    if (!cookiesToCopy && !domain) {
+  chrome.storage.sync.get(['cookiesToSync', 'domain'], async ({ cookiesToSync, domain }) => {
+    if (!cookiesToSync && !domain) {
       await chrome.storage.sync.set({
-        cookiesToCopy: ['at', 'authToken'],
-        domain: 'dev.vroom.com',
+        cookiesToSync: [],
+        domain: '',
       });
     }
   });
@@ -25,9 +52,9 @@ function handleInstall() {
 
 async function copyCookiesToLocalhost() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(['cookiesToCopy', 'domain'], async ({ cookiesToCopy, domain }) => {
+    chrome.storage.sync.get(['cookiesToSync', 'domain'], async ({ cookiesToSync, domain }) => {
       let cookies = await chrome.cookies.getAll({ domain });
-      cookies = cookies.filter(cookie => cookiesToCopy.includes(cookie.name));
+      cookies = cookies.filter(cookie => cookiesToSync.includes(cookie.name));
       const results = [];
       const errors = [];
 
